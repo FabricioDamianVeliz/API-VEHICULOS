@@ -40,74 +40,146 @@ exports.crearVehiculo = async(req,res,next) => {
     
 };
 
-exports.a = async() => {}
-
-// vehiculosRouter.get('/vehiculos/find', async(req,res) => {
+exports.buscador = async(req,res,next) => {
+    
+    try {
         
-// });
+        const {vehiculo, marca, ano, descripcion, vendido} = req.query;
+        
+        console.log(typeof(ano));
+        const a = Number(ano);
+        console.log(typeof(a));
 
-// vehiculosRouter.get('/vehiculos/:id', (req,res,next) => {
+        const vehiculos = await Vehiculo.find({});
 
-//     // const id = Number(req.params.id);
-//     const {id} = req.params;
+        vehiculos.forEach(car => {
+            // if(car.vehiculo === vehiculo || car.marca === marca || car.ano === ano || car.descripcion === descripcion || car.vendido === vendido){
 
-//     Note.findById(id)
-//         .then(note => {
-//             if(note){
-//                 return res.json(note);
-//             }else{
-//                 res.status(404).end();
-//             }
-//         })
-//         .catch(error => next(error));
-//         // console.log(err.message);
-//         // res.status(400).end();
-//         // const note = notes.find(note => note.id === id);
-// });
+            // }
+            
+            if(car.marca === marca || car.ano === a){
+                // const resultado = [];
+                // resultado = resultado.concat(car);
+                // console.log(resultado);
+                // const resultado = vehiculos.map(car);
+                console.log('encontrado');
+                
+            }
+        });
 
-// vehiculosRouter.put('/vehiculos/:id', (req,res,next) => {
+        console.log(resultado);
+        res.json(resultado);
+        
+    } catch (error) {
+        next(error);
+    }
+};
 
-//     const {id} = req.params;
-//     const note = req.body;
-//     const newNoteInfo = {
-//         content: note.content,
-//         important: note.important 
-//     };
+exports.mostrarVehiculoPorId = async(req,res,next) => {
 
-//     Note.findByIdAndUpdate(id,newNoteInfo,{new: true})
-//         .then(result => {
-//             res.json(result);
-//         })
-//         .catch(error => next(error));
+    try {
 
-// });
+        const {id} = req.params;
+        const vehiculoEncontrado = await Vehiculo.findById(id);
+        if(vehiculoEncontrado){
+            return res.json(vehiculoEncontrado);
+        }else{
+            res.status(404).end();
+        }
+        
+    } catch (error) {
+        next(error);
+    }
+    
+};
 
-// vehiculosRouter.patch('/vehiculos/:id', (req,res,next) => {
+exports.modificarDatos = async(req,res,next) => {
 
-//     const {id} = req.params;
+    try {
+        
+        const {id} = req.params;
+        const {vehiculo, marca, ano, descripcion, vendido, updated} = req.body;
 
-//     // notes = notes.filter(note => note.id !== id);
+        const newVehiculo = {
+            vehiculo,
+            marca,
+            ano,
+            descripcion,
+            vendido,
+            updated: new Date()
+        };
 
-//     Note.findByIdAndDelete(id)
-//         .then(() => {
-//             res.status(204).end();
-//         })
-//         .catch(error => next(error));
+        const vehiculoUpdated = await Vehiculo.findByIdAndUpdate(id,newVehiculo,{new: true});
+        res.json(vehiculoUpdated);
 
-// });
+    } catch (error) {
+        
+        next(error);
+    }
 
-// vehiculosRouter.delete('/vehiculos/:id', (req,res,next) => {
+};
 
-//     const {id} = req.params;
+exports.cambiarEstadoVendido = async(req,res,next) => {
 
-//     // notes = notes.filter(note => note.id !== id);
+    try {
+        
+        const {id} = req.params;
+        const {vendido: sold} = await Vehiculo.findById(id);
 
-//     Note.findByIdAndDelete(id)
-//         .then(() => {
-//             res.status(204).end();
-//         })
-//         .catch(error => next(error));
+        // cambiar el estado
+        let estado = false;
+        if(sold === estado) {
+            
+            estado = true;
+        }else{
+            estado = false;
+        }
+ 
+        const newVehiculo = {
 
-// });
+            vendido: estado,
+            updated: new Date()
+        };
+
+        const vehiculoUpdated = await Vehiculo.findByIdAndUpdate(id,newVehiculo,{new: true});
+        res.json(vehiculoUpdated);
+    } catch (error) {
+        
+        next(error);
+    }
+    
+};
+
+exports.borrarVehiculo = async(req,res,next) => {
+
+    try {
+        
+        const {id} = req.params;
+        await Vehiculo.findByIdAndDelete(id);
+        res.status(204).end();
+    } catch (error) {
+        
+        next(error);
+    }
+
+};
+
+exports.buscarVehiculo = async(req, res, next) => {
+
+    const marcaQuery = req.query.marca
+    const anoQuery = req.query.ano
+
+    try {
+
+        const vehiculoEncontrado = await Vehiculo.find( marcaQuery && anoQuery ? {$and:[{marca: marcaQuery},{ano: anoQuery} ]} : {$or:[{marca: marcaQuery},{ano: anoQuery} ]})
+
+        res.status(200).json(vehiculoEncontrado)
+
+
+    } catch (error) {
+
+        next(error)
+    }
+}
 
 

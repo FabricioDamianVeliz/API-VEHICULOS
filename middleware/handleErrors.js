@@ -6,7 +6,7 @@ const ERROR_HANDLERS = {
 
     ValidationError: (res, {message}) => 
         res.status(409).send({
-            error: message
+            error: 'campo ya existe'
         }),
     
     JsonWebTokenError: res =>
