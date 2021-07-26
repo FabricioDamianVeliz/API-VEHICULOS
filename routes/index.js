@@ -11,6 +11,7 @@ module.exports = function(){
         res.send('<h1>Hola Mundo</h1>');
     });
 
+    //rutas
     router.get('/vehiculos',vehiculosController.mostrarVehiculos);
     router.post('/vehiculos',vehiculosController.crearVehiculo);
 

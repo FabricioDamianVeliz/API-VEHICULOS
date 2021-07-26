@@ -40,40 +40,58 @@ exports.crearVehiculo = async(req,res,next) => {
     
 };
 
-exports.buscador = async(req,res,next) => {
+// exports.buscador = async(req,res,next) => {
     
-    try {
+//     try {
         
-        const {vehiculo, marca, ano, descripcion, vendido} = req.query;
+//         const {vehiculo, marca, ano, descripcion, vendido} = req.query;
         
-        console.log(typeof(ano));
-        const a = Number(ano);
-        console.log(typeof(a));
+//         console.log(typeof(ano));
+//         const a = Number(ano);
+//         console.log(typeof(a));
 
-        const vehiculos = await Vehiculo.find({});
+//         const vehiculos = await Vehiculo.find({});
 
-        vehiculos.forEach(car => {
-            // if(car.vehiculo === vehiculo || car.marca === marca || car.ano === ano || car.descripcion === descripcion || car.vendido === vendido){
+//         vehiculos.forEach(car => {
+//             // if(car.vehiculo === vehiculo || car.marca === marca || car.ano === ano || car.descripcion === descripcion || car.vendido === vendido){
 
-            // }
+//             // }
             
-            if(car.marca === marca || car.ano === a){
-                // const resultado = [];
-                // resultado = resultado.concat(car);
-                // console.log(resultado);
-                // const resultado = vehiculos.map(car);
-                console.log('encontrado');
+//             if(car.marca === marca || car.ano === a){
+//                 // const resultado = [];
+//                 // resultado = resultado.concat(car);
+//                 // console.log(resultado);
+//                 // const resultado = vehiculos.map(car);
+//                 console.log('encontrado');
                 
-            }
-        });
+//             }
+//         });
 
-        console.log(resultado);
-        res.json(resultado);
+//         console.log(resultado);
+//         res.json(resultado);
         
+//     } catch (error) {
+//         next(error);
+//     }
+// };
+
+exports.buscarVehiculo = async(req, res, next) => {
+
+    const marcaQuery = req.query.marca
+    const anoQuery = req.query.ano
+
+    try {
+
+        const vehiculoEncontrado = await Vehiculo.find( marcaQuery && anoQuery ? {$and:[{marca: marcaQuery},{ano: anoQuery} ]} : {$or:[{marca: marcaQuery},{ano: anoQuery} ]})
+
+        res.status(200).json(vehiculoEncontrado)
+
+
     } catch (error) {
-        next(error);
+
+        next(error)
     }
-};
+}
 
 exports.mostrarVehiculoPorId = async(req,res,next) => {
 
@@ -164,22 +182,6 @@ exports.borrarVehiculo = async(req,res,next) => {
 
 };
 
-exports.buscarVehiculo = async(req, res, next) => {
 
-    const marcaQuery = req.query.marca
-    const anoQuery = req.query.ano
-
-    try {
-
-        const vehiculoEncontrado = await Vehiculo.find( marcaQuery && anoQuery ? {$and:[{marca: marcaQuery},{ano: anoQuery} ]} : {$or:[{marca: marcaQuery},{ano: anoQuery} ]})
-
-        res.status(200).json(vehiculoEncontrado)
-
-
-    } catch (error) {
-
-        next(error)
-    }
-}
 
 
