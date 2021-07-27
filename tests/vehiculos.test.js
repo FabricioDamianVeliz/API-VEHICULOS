@@ -82,34 +82,37 @@ describe('create a vehicle', () => {
     });
 });
 
-// test('una nota se puede borrar', async () => {
+describe('delete a vehicle', () => {
+
+    test('un vehiculo se puede borrar', async () => {
     
-//     const response = await api.get('/api/notes');
-//     const{body: notes} = response;
-//     const noteToDelete = notes[0];
+        const response = await api.get('/vehiculos');
+        const{body: vehiculos} = response;
+        const vehicleToDelete = vehiculos[0];
 
-//     await api
-//         .delete(`/api/notes/${noteToDelete.id}`)
-//         .expect(204)
+        await api
+            .delete(`/vehiculos/${vehicleToDelete.id}`)
+            .expect(204)
 
-//     const responseTwo = await api.get('/api/notes');
-//     expect(responseTwo.body).toHaveLength(initialNotes.length-1);
+        const responseTwo = await api.get('/vehiculos');
+        expect(responseTwo.body).toHaveLength(initialVehicles.length-1);
 
-//     const contents = responseTwo.body.map(note => note.content);
-//     expect(contents).not.toContain(noteToDelete.content);
-// });
+        const marcas = responseTwo.body.map(vehiculo => vehiculo.marca);
+        expect(marcas).not.toContain(vehicleToDelete.marca);
+    });
 
-// test('una nota no se puede borrar', async () => {
+    test('un vehiculo no se puede borrar', async () => {
 
-//     await api
-//         .delete('/api/notes/1234')
-//         .expect(400)
+        await api
+            .delete('/vehiculos/1234')
+            .expect(400)
 
-//     const response = await api.get('/api/notes');
+        const response = await api.get('/vehiculos');
 
-//     expect(response.body).toHaveLength(initialNotes.length);
+        expect(response.body).toHaveLength(initialVehicles.length);
 
-// });
+    });
+});
 
 afterAll(() => {
     mongoose.connection.close();
