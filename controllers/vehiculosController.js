@@ -77,12 +77,12 @@ exports.crearVehiculo = async(req,res,next) => {
 
 exports.buscarVehiculo = async(req, res, next) => {
 
-    const marcaQuery = req.query.marca
-    const anoQuery = req.query.ano
+    const {marca} = req.query
+    const {ano} = req.query
 
     try {
 
-        const vehiculoEncontrado = await Vehiculo.find( marcaQuery && anoQuery ? {$and:[{marca: marcaQuery},{ano: anoQuery} ]} : {$or:[{marca: marcaQuery},{ano: anoQuery} ]})
+        const vehiculoEncontrado = await Vehiculo.find( marca && ano ? {$and:[{marca},{ano} ]} : {$or:[{marca},{ano} ]})
 
         res.status(200).json(vehiculoEncontrado)
 
